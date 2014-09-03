@@ -1,29 +1,31 @@
 package com.comparator;
 
+import difflib.Delta;
+import difflib.DiffUtils;
+import difflib.Patch;
+
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
-	public static void main (String[] args) throws IOException {
-		for (String input : args) {
-			String urlSource = getUrlSource(input);
+	public static void main (String arg) throws IOException {
+		List<String> pageSource = getPageSource(arg);
 
-			PrintWriter writer = new PrintWriter(
-				"original-page-source.html", "UTF-8");
+		PrintWriter writer = new PrintWriter(
+			"original-page-source.html", "UTF-8");
 
-			writer.println(urlSource);
+		writer.println(pageSource);
 
-			writer.close();
-		}
+		writer.close();
 	}
 
-	private static String getUrlSource(String url) throws IOException {
+	private static List<String> getPageSource(String url) throws IOException {
 		URL sourceUrl = new URL(url);
 
 		URLConnection sourceUrlConnection = sourceUrl.openConnection();
@@ -33,16 +35,25 @@ public class Main {
 
 		String inputLine = null;
 
-		StringBuilder sb = new StringBuilder();
+		List<String> pageSource = new ArrayList<String>();
 
 		while ((inputLine = in.readLine()) != null) {
-			sb.append(inputLine);
-			sb.append('\n');
+			pageSource.add(inputLine);
 		}
 
 		in.close();
 
-		return sb.toString();
+		return pageSource;
+	}
+
+	private static void printDiff(
+		List<String> previousSource, List<String> currentSource) {
+
+		Patch patch = DiffUtils.diff(previousSource, currentSource);
+
+		for (Delta delta : patch.getDeltas()) {
+			System.out.println(delta);
+		}
 	}
 
 }

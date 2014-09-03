@@ -10,6 +10,6 @@ public class ComparatorTest {
 	public void testComparator() throws IOException {
 		Main myMain = new Main();
 
-		myMain.main(PageSourceComparatorTestSuite.urls);
+		myMain.main(PageSourceComparatorTestSuite.url);
 	}
 }

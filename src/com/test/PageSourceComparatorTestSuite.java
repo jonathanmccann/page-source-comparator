@@ -11,11 +11,11 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ComparatorTest.class})
 public class PageSourceComparatorTestSuite {
 
-	public static String[] urls;
+	public static String url;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		urls = new String[]{"http://www.google.com"};
+		url = "http://www.google.com";
 	}
 
 	@AfterClass
