@@ -33,15 +33,16 @@ public class Main {
 
 		String inputLine = null;
 
-		StringBuilder a = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 
 		while ((inputLine = in.readLine()) != null) {
-			a.append(inputLine);
+			sb.append(inputLine);
+			sb.append('\n');
 		}
 
 		in.close();
 
-		return a.toString();
+		return sb.toString();
 	}
 
 }
