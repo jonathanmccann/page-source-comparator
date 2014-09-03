@@ -16,22 +16,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-	public static void main (String arg) throws IOException {
-		String pageSource = getPageSource(arg);
+	public static void main (String[] args) throws IOException {
+		for (String arg : args) {
+			String pageSource = getPageSource(arg);
 
-		PrintWriter writer = new PrintWriter(
-			_CURRENT_PAGE_SOURCE, "UTF-8");
+			PrintWriter writer = new PrintWriter(
+					_CURRENT_PAGE_SOURCE, "UTF-8");
 
-		writer.println(pageSource);
+			writer.println(pageSource);
 
-		writer.close();
+			writer.close();
 
-		printDiff(_PREVIOUS_PAGE_SOURCE, _CURRENT_PAGE_SOURCE);
+			printDiff(_PREVIOUS_PAGE_SOURCE, _CURRENT_PAGE_SOURCE);
 
-		new File(_PREVIOUS_PAGE_SOURCE).delete();
+			new File(_PREVIOUS_PAGE_SOURCE).delete();
 
-		new File(_CURRENT_PAGE_SOURCE).renameTo(
-			new File(_PREVIOUS_PAGE_SOURCE));
+			new File(_CURRENT_PAGE_SOURCE).renameTo(
+					new File(_PREVIOUS_PAGE_SOURCE));
+		}
 	}
 
 	private static String getPageSource(String url) throws IOException {

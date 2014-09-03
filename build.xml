@@ -1,0 +1,67 @@
+<project name="page-source-comparator" default="dist" basedir=".">
+  <property name="src" location="src"/>
+  <property name="classes" location="classes"/>
+  <property name="dist"  location="dist"/>
+  <property name="lib"  location="lib"/>
+  <property file="src/config.properties"/>
+
+  <path id="classpath">
+    <fileset dir="${lib}" includes="**/*.jar"/>
+  </path>
+
+  <target name="all">
+    <antcall target="clean" />
+    <antcall target="compile" />
+    <antcall target="dist" />
+  </target>
+
+  <target name="clean" >
+    <delete dir="${classes}"/>
+    <delete dir="${dist}"/>
+  </target>
+
+  <target name="compile" depends="init" >
+    <javac srcdir="${src}" destdir="${classes}" classpathref="classpath"/>
+    <copy todir="${classes}">
+      <fileset dir="${src}" excludes="**/*.java"/>
+    </copy>
+  </target>
+
+  <target name="dist" depends="compile" >
+    <mkdir dir="${dist}"/>
+
+    <jar jarfile="${dist}/page-source-comparator.jar" basedir="${classes}">
+      <manifest>
+        <attribute name="Main-Class" value="com.comparator.Main"/>
+      </manifest>
+      <zipgroupfileset dir="${lib}" includes="**/*.jar"/>
+    </jar>
+  </target>
+
+  <target name="init">
+    <tstamp/>
+    <mkdir dir="${classes}"/>
+  </target>
+
+  <target name="junit" depends="dist">
+    <junit printsummary="yes">
+      <classpath>
+        <path refid="classpath" />
+        <path location="${dist}/page-source-comparator.jar" />
+      </classpath>
+      
+      <test name="com.test.PageSourceComparatorestSuite" haltonfailure="no" outfile="testResults">
+        <formatter type="xml"/>
+      </test>
+    </junit>
+  </target>
+
+  <target name="run" depends="dist">
+    <java fork="true" classname="com.comparator.Main">
+      <classpath>
+        <path refid="classpath"/>
+        <path location="${dist}/page-source-comparator.jar"/>
+      </classpath>
+    </java>
+  </target>
+</project>
