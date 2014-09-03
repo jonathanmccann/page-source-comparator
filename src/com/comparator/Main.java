@@ -6,6 +6,7 @@ import difflib.Patch;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -16,22 +17,24 @@ import java.util.List;
 
 public class Main {
 	public static void main (String arg) throws IOException {
-		List<String> pageSource = getPageSource(arg);
+		String pageSource = getPageSource(arg);
 
 		PrintWriter writer = new PrintWriter(
-			"current-page-source.html", "UTF-8");
+			_CURRENT_PAGE_SOURCE, "UTF-8");
 
 		writer.println(pageSource);
 
 		writer.close();
 
-		new File("previous-page-source.html").delete();
+		printDiff(_PREVIOUS_PAGE_SOURCE, _CURRENT_PAGE_SOURCE);
 
-		new File("current-page-source.html").renameTo(
-			new File("previous-page-source.html"));
+		new File(_PREVIOUS_PAGE_SOURCE).delete();
+
+		new File(_CURRENT_PAGE_SOURCE).renameTo(
+			new File(_PREVIOUS_PAGE_SOURCE));
 	}
 
-	private static List<String> getPageSource(String url) throws IOException {
+	private static String getPageSource(String url) throws IOException {
 		URL sourceUrl = new URL(url);
 
 		URLConnection sourceUrlConnection = sourceUrl.openConnection();
@@ -41,19 +44,40 @@ public class Main {
 
 		String inputLine = null;
 
-		List<String> pageSource = new ArrayList<String>();
+		StringBuilder sb = new StringBuilder();
 
 		while ((inputLine = in.readLine()) != null) {
-			pageSource.add(inputLine);
+			sb.append(inputLine);
+			sb.append('\n');
 		}
 
 		in.close();
 
-		return pageSource;
+		return sb.toString();
+	}
+
+	private static List<String> getPageSourceLines(String sourceFileName)
+		throws IOException{
+
+		List<String> lines = new ArrayList<String>();
+
+		String line = null;
+
+		BufferedReader in = new BufferedReader(new FileReader(sourceFileName));
+
+		while ((line = in.readLine()) != null) {
+			lines.add(line);
+		}
+
+		return lines;
 	}
 
 	private static void printDiff(
-		List<String> previousSource, List<String> currentSource) {
+			String previousSourceFileName, String currentSourceFileName)
+		throws IOException{
+
+		List<String> previousSource = getPageSourceLines(previousSourceFileName);
+		List<String> currentSource = getPageSourceLines(currentSourceFileName);
 
 		Patch patch = DiffUtils.diff(previousSource, currentSource);
 
@@ -61,5 +85,10 @@ public class Main {
 			System.out.println(delta);
 		}
 	}
+
+	private static final String _CURRENT_PAGE_SOURCE =
+		"current-page-source.html";
+	private static final String _PREVIOUS_PAGE_SOURCE =
+		"previous-page-source.html";
 
 }
