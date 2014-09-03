@@ -81,8 +81,13 @@ public class Main {
 
 		Patch patch = DiffUtils.diff(previousSource, currentSource);
 
-		for (Delta delta : patch.getDeltas()) {
-			System.out.println(delta);
+		if (patch.getDeltas().size() == 0) {
+			System.out.println("The two pages are identical");
+		}
+		else {
+			for (Delta delta : patch.getDeltas()) {
+				System.out.println(delta);
+			}
 		}
 	}
 
