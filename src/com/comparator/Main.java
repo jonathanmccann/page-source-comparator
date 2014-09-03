@@ -5,6 +5,7 @@ import difflib.DiffUtils;
 import difflib.Patch;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -18,11 +19,16 @@ public class Main {
 		List<String> pageSource = getPageSource(arg);
 
 		PrintWriter writer = new PrintWriter(
-			"original-page-source.html", "UTF-8");
+			"current-page-source.html", "UTF-8");
 
 		writer.println(pageSource);
 
 		writer.close();
+
+		new File("previous-page-source.html").delete();
+
+		new File("current-page-source.html").renameTo(
+			new File("previous-page-source.html"));
 	}
 
 	private static List<String> getPageSource(String url) throws IOException {
